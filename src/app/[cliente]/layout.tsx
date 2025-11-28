@@ -1,14 +1,15 @@
 import { ThemeProvider } from '@/components/providers/theme-provider'
 
-export default function ClienteLayout({
+export default async function ClienteLayout({
     children,
     params,
 }: {
     children: React.ReactNode
-    params: { cliente: string }
+    params: Promise<{ cliente: string }>
 }) {
+    const { cliente } = await params
     return (
-        <ThemeProvider clientSlug={params.cliente}>
+        <ThemeProvider clientSlug={cliente}>
             {children}
         </ThemeProvider>
     )

@@ -1,5 +1,15 @@
 // Theme configuration for each client
-export const clientThemes = {
+export interface ClientTheme {
+    primary: string
+    secondary: string
+    accent: string
+    gradient: string
+    name: string
+    colors: Record<string, string>
+}
+
+// Theme configuration for each client
+export const clientThemes: Record<string, ClientTheme> = {
     claro: {
         primary: '#E8232A',
         secondary: '#FFFFFF',

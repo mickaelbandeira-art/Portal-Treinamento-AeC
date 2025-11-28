@@ -1,10 +1,10 @@
 'use client'
 
 import { createContext, useContext, useEffect } from 'react'
-import { clientThemes, type ClientSlug } from '@/lib/themes'
+import { clientThemes, type ClientTheme } from '@/lib/themes'
 
 interface ThemeContextType {
-    theme: typeof clientThemes.default
+    theme: ClientTheme
     clientSlug: string
 }
 
@@ -24,7 +24,7 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({ children, clientSlug }: ThemeProviderProps) {
     const normalizedSlug = clientSlug.toLowerCase().replace(/\s+/g, '-')
-    const theme = clientThemes[normalizedSlug as ClientSlug] || clientThemes.default
+    const theme = clientThemes[normalizedSlug] || clientThemes.default
 
     useEffect(() => {
         // Apply CSS variables for dynamic theming
