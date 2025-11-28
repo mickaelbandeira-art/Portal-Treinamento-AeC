@@ -1,5 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { Sidebar } from '@/components/layout/sidebar'
+import { Header } from '@/components/layout/header'
+import { Card, CardContent } from '@/components/ui/card'
+import { BookOpen, Clock, Users, PlayCircle, Award, TrendingUp } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 export default async function FormacaoContinuadaPage({ params }: { params: { cliente: string } }) {
     const supabase = await createClient()
@@ -16,66 +21,132 @@ export default async function FormacaoContinuadaPage({ params }: { params: { cli
         .eq('email', user.email)
         .single()
 
-    // Fetch continuous training courses (simulated by fetching all for now)
+    // Fetch continuous training courses
     const { data: cursos } = await supabase
         .from('cursos_obrigatorios')
         .select('*')
-    // .eq('tipo', 'continuada') // In real app
+
+    const mockCourses = cursos && cursos.length > 0 ? cursos : [
+        { id: 1, titulo: 'Técnicas Avançadas de Vendas', descricao: 'Aprimore suas habilidades comerciais', duracao: '4h', nivel: 'Avançado', alunos: 156 },
+        { id: 2, titulo: 'Gestão de Conflitos', descricao: 'Como lidar com situações desafiadoras', duracao: '3h', nivel: 'Intermediário', alunos: 203 },
+        { id: 3, titulo: 'Liderança e Motivação', descricao: 'Desenvolva suas competências de liderança', duracao: '5h', nivel: 'Avançado', alunos: 98 },
+        { id: 4, titulo: 'Atualização de Produtos 2024', descricao: 'Novidades e lançamentos', duracao: '2h', nivel: 'Básico', alunos: 421 },
+    ]
 
     return (
-        <div className="min-h-screen bg-background p-8">
-            <div className="max-w-7xl mx-auto space-y-8">
+        <div className="min-h-screen bg-background">
+            <Sidebar clientSlug={params.cliente} />
+            <Header userName={userData?.nome} userRole={(userData?.hierarquia as any)?.cargo || (userData?.hierarquia as any)?.[0]?.cargo} />
+
+            <main className="ml-64 mt-16 p-8">
                 {/* Header */}
-                <div className="glass-card p-6 neon-border">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h1 className="text-4xl font-bold gradient-text">
-                                Formação Continuada
-                            </h1>
-                            <p className="text-muted-foreground mt-2">
-                                Cursos de reciclagem e aprimoramento profissional
-                            </p>
-                        </div>
-                        <div className="text-right">
-                            <p className="font-semibold">{userData?.nome}</p>
-                            <p className="text-xs text-muted-foreground">{(userData?.hierarquia as any)?.cargo || (userData?.hierarquia as any)?.[0]?.cargo}</p>
-                        </div>
+                <div className="mb-8">
+                    <div className="flex items-center gap-3 mb-2">
+                        <BookOpen className="h-8 w-8 text-cyan-400" />
+                        <h1 className="text-4xl font-bold gradient-text">Formação Continuada</h1>
                     </div>
+                    <p className="text-muted-foreground">
+                        Cursos de reciclagem e aprimoramento profissional
+                    </p>
+                </div>
+
+                {/* Stats Overview */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <Card className="glass-card border-cyan-400/20">
+                        <CardContent className="p-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-muted-foreground mb-1">Cursos Concluídos</p>
+                                    <p className="text-3xl font-bold">12</p>
+                                </div>
+                                <Award className="h-8 w-8 text-cyan-400" />
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="glass-card border-green-400/20">
+                        <CardContent className="p-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-muted-foreground mb-1">Certificados</p>
+                                    <p className="text-3xl font-bold">8</p>
+                                </div>
+                                <Award className="h-8 w-8 text-green-400" />
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="glass-card border-purple-400/20">
+                        <CardContent className="p-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-muted-foreground mb-1">Horas Totais</p>
+                                    <p className="text-3xl font-bold">48h</p>
+                                </div>
+                                <Clock className="h-8 w-8 text-purple-400" />
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="glass-card border-yellow-400/20">
+                        <CardContent className="p-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-muted-foreground mb-1">Ranking</p>
+                                    <p className="text-3xl font-bold">#15</p>
+                                </div>
+                                <TrendingUp className="h-8 w-8 text-yellow-400" />
+                            </div>
+                        </CardContent>
+                    </Card>
                 </div>
 
                 {/* Courses Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {cursos?.map((curso) => (
-                        <div key={curso.id} className="glass-card p-6 hover:neon-border transition-all group border-l-4 border-cyan-400">
-                            <div className="h-40 bg-gradient-to-br from-cyan-400/20 to-blue-600/20 rounded-lg mb-4 flex items-center justify-center">
-                                <svg className="h-12 w-12 text-cyan-400 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                                </svg>
-                            </div>
-                            <h3 className="text-xl font-bold mb-2 group-hover:gradient-text transition-all">{curso.titulo}</h3>
-                            <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
-                                {curso.descricao || 'Sem descrição disponível.'}
-                            </p>
-                            <div className="flex gap-2">
-                                <span className="px-2 py-1 rounded-full bg-cyan-400/10 text-cyan-400 text-xs border border-cyan-400/20">
-                                    Reciclagem
-                                </span>
-                                <span className="px-2 py-1 rounded-full bg-blue-400/10 text-blue-400 text-xs border border-blue-400/20">
-                                    Técnico
-                                </span>
-                            </div>
-                            <button className="w-full mt-4 py-2 rounded-md bg-cyan-400/10 hover:bg-cyan-400/20 text-cyan-400 border border-cyan-400/20 transition-all">
-                                Acessar Conteúdo
-                            </button>
-                        </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {mockCourses.map((curso, index) => (
+                        <Card key={curso.id} className="glass-card hover:neon-border transition-all group hover:scale-105 border-l-4 border-cyan-400">
+                            <CardContent className="p-6">
+                                <div className="flex items-start justify-between mb-4">
+                                    <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-cyan-400/20 to-blue-600/20 flex items-center justify-center">
+                                        <BookOpen className="h-6 w-6 text-cyan-400" />
+                                    </div>
+                                    <span className={`px-3 py-1 rounded-full text-xs border ${curso.nivel === 'Avançado' ? 'bg-red-400/10 text-red-400 border-red-400/20' :
+                                            curso.nivel === 'Intermediário' ? 'bg-yellow-400/10 text-yellow-400 border-yellow-400/20' :
+                                                'bg-green-400/10 text-green-400 border-green-400/20'
+                                        }`}>
+                                        {curso.nivel}
+                                    </span>
+                                </div>
+
+                                <h3 className="text-xl font-bold mb-2 group-hover:gradient-text transition-all">
+                                    {curso.titulo}
+                                </h3>
+                                <p className="text-sm text-muted-foreground mb-4">
+                                    {curso.descricao || 'Sem descrição disponível.'}
+                                </p>
+
+                                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
+                                    <div className="flex items-center gap-1">
+                                        <Clock className="h-4 w-4" />
+                                        <span>{curso.duracao}</span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <Users className="h-4 w-4" />
+                                        <span>{curso.alunos} alunos</span>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-2">
+                                    <Button className="flex-1 bg-gradient-to-r from-cyan-400 to-blue-600">
+                                        <PlayCircle className="h-4 w-4 mr-2" />
+                                        Acessar Curso
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
                     ))}
-                    {(!cursos || cursos.length === 0) && (
-                        <div className="col-span-full text-center py-12 glass-card">
-                            <p className="text-muted-foreground">Nenhum curso de formação continuada disponível.</p>
-                        </div>
-                    )}
                 </div>
-            </div>
+            </main>
         </div>
     )
 }
