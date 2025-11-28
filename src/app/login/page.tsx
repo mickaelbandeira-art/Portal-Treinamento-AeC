@@ -2,19 +2,36 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Sparkles, Mail, Lock, AlertCircle, Loader2, Brain, Zap, Shield, TrendingUp } from 'lucide-react'
-import { createClient } from '@/lib/supabase/client'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+    Sparkles,
+    GraduationCap,
+    BookOpen,
+    PieChart,
+    BarChart3,
+    ArrowRight,
+    CheckCircle2,
+    Loader2
+} from 'lucide-react'
 
-export default function LoginPage() {
+export default function LandingPage() {
     const router = useRouter()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
+    const [isLoginOpen, setIsLoginOpen] = useState(false)
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -23,7 +40,7 @@ export default function LoginPage() {
 
         try {
             const supabase = createClient()
-            const { data, error } = await supabase.auth.signInWithPassword({
+            const { error } = await supabase.auth.signInWithPassword({
                 email,
                 password,
             })
@@ -39,196 +56,258 @@ export default function LoginPage() {
         }
     }
 
-    const features = [
-        { icon: Brain, title: 'IA Integrada', description: 'Assistente inteligente para suporte 24/7' },
-        { icon: Zap, title: 'Aprendizado Rápido', description: 'Trilhas personalizadas e adaptativas' },
-        { icon: Shield, title: 'Segurança Total', description: 'Dados protegidos com criptografia' },
-        { icon: TrendingUp, title: 'Analytics Avançado', description: 'Métricas em tempo real' }
+    const cards = [
+        {
+            title: "Formação Inicial",
+            icon: GraduationCap,
+            color: "#00BBEE", // Céu
+            description: "Trilhas de aprendizado para novos colaboradores."
+        },
+        {
+            title: "Formação Continuada",
+            icon: BookOpen,
+            color: "#8CC63F", // Folha
+            description: "Desenvolvimento constante e atualização de skills."
+        },
+        {
+            title: "Visão 360°",
+            icon: PieChart,
+            color: "#E6007E", // Rubi
+            description: "Análise completa de desempenho e engajamento."
+        },
+        {
+            title: "Indicadores",
+            icon: BarChart3,
+            color: "#FFCC00", // Sol
+            description: "Métricas em tempo real para tomada de decisão."
+        }
+    ]
+
+    const clients = [
+        { name: "Claro", color: "#E8232A" },
+        { name: "iFood", color: "#EA1D2C" },
+        { name: "iFood Pago", color: "#6B1144" },
+        { name: "Banco Inter", color: "#FF7A00" },
+        { name: "Ton", color: "#00FF00" }
     ]
 
     return (
-        <div className="min-h-screen flex relative overflow-hidden bg-gradient-to-br from-[#001a33] via-[#002244] to-[#001a33]">
-            {/* Animated Background */}
-            <div className="absolute inset-0 overflow-hidden">
-                {/* Grid Pattern */}
-                <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
+        <div className="min-h-screen bg-[#0E0E11] text-white font-sans selection:bg-[#00BBEE] selection:text-white overflow-x-hidden">
 
-                {/* Floating Orbs - AeC Colors */}
-                <div className="absolute top-20 left-20 h-96 w-96 bg-[#005EB8] rounded-full blur-3xl opacity-20 animate-pulse" />
-                <div className="absolute top-40 right-20 h-80 w-80 bg-[#00B8D4] rounded-full blur-3xl opacity-20 animate-pulse delay-1000" />
-                <div className="absolute bottom-20 left-1/3 h-72 w-72 bg-[#E91E63] rounded-full blur-3xl opacity-15 animate-pulse delay-2000" />
-                <div className="absolute bottom-40 right-1/4 h-64 w-64 bg-[#FFD600] rounded-full blur-3xl opacity-10 animate-pulse delay-3000" />
+            {/* --- HERO SECTION --- */}
+            <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+                {/* Background Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#004C99] via-[#0E0E11] to-[#0E0E11] opacity-40" />
 
-                {/* Animated Lines */}
-                <svg className="absolute inset-0 w-full h-full opacity-20">
-                    <defs>
-                        <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#005EB8" />
-                            <stop offset="50%" stopColor="#00B8D4" />
-                            <stop offset="100%" stopColor="#E91E63" />
-                        </linearGradient>
-                    </defs>
-                    <line x1="0" y1="0" x2="100%" y2="100%" stroke="url(#lineGradient)" strokeWidth="2" className="animate-pulse" />
-                    <line x1="100%" y1="0" x2="0" y2="100%" stroke="url(#lineGradient)" strokeWidth="2" className="animate-pulse delay-1000" />
-                </svg>
-            </div>
+                {/* Grid Pattern Overlay */}
+                <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.03]" />
 
-            {/* Left Side - Branding */}
-            <div className="hidden lg:flex lg:w-1/2 relative z-10 flex-col justify-center px-16 text-white">
-                <div className="space-y-8">
-                    {/* Logo */}
-                    <div className="flex items-center gap-4 mb-12">
-                        <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-[#005EB8] via-[#00B8D4] to-[#E91E63] flex items-center justify-center shadow-2xl shadow-[#005EB8]/50">
-                            <Sparkles className="h-10 w-10 text-white" />
+                {/* Glow Effects */}
+                <div className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-[#004C99] rounded-full blur-[120px] opacity-20 animate-pulse" />
+                <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-[#00BBEE] rounded-full blur-[120px] opacity-10" />
+
+                <div className="container mx-auto px-6 relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+
+                    {/* Text Content */}
+                    <div className="space-y-8 text-center lg:text-left">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
+                            <Sparkles className="w-4 h-4 text-[#FFCC00]" />
+                            <span className="text-sm font-medium text-gray-300">Powered by AeC Intelligence</span>
                         </div>
-                        <div>
-                            <h1 className="text-5xl font-bold bg-gradient-to-r from-[#005EB8] via-[#00B8D4] to-[#E91E63] bg-clip-text text-transparent">
-                                Portal AeC
-                            </h1>
-                            <p className="text-[#00B8D4] text-lg mt-1">Relacionamento com Responsabilidade</p>
-                        </div>
-                    </div>
 
-                    {/* Main Heading */}
-                    <div className="space-y-4">
-                        <h2 className="text-4xl font-bold leading-tight">
-                            Plataforma de Treinamento
-                            <span className="block bg-gradient-to-r from-[#00B8D4] to-[#E91E63] bg-clip-text text-transparent">
-                                Corporativo com IA
+                        <h1 className="text-5xl lg:text-7xl font-bold leading-tight tracking-tight">
+                            Portal Corporativo de <br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00BBEE] to-[#004C99]">
+                                Formação e Treinamento
                             </span>
-                        </h2>
-                        <p className="text-lg text-gray-300 max-w-md">
-                            Transforme o desenvolvimento da sua equipe com tecnologia de ponta e inteligência artificial integrada.
+                        </h1>
+
+                        <p className="text-xl text-gray-400 max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed">
+                            Sistema unificado de gestão de formação inicial, continuada e indicadores com inteligência de dados.
                         </p>
+
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+                            <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
+                                <DialogTrigger asChild>
+                                    <Button
+                                        className="h-14 px-8 text-lg font-semibold bg-[#FFCC00] text-[#0E0E11] hover:bg-[#FFCC00]/90 shadow-[0_0_20px_rgba(255,204,0,0.3)] transition-all hover:scale-105 rounded-xl"
+                                    >
+                                        Acessar Portal
+                                        <ArrowRight className="ml-2 w-5 h-5" />
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="bg-[#0E0E11]/95 backdrop-blur-xl border border-white/10 text-white sm:rounded-2xl">
+                                    <DialogHeader>
+                                        <DialogTitle className="text-2xl font-bold text-center mb-2">Acessar Conta</DialogTitle>
+                                        <DialogDescription className="text-center text-gray-400">
+                                            Entre com suas credenciais corporativas
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <form onSubmit={handleLogin} className="space-y-6 mt-4">
+                                        {error && (
+                                            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center">
+                                                {error}
+                                            </div>
+                                        )}
+                                        <div className="space-y-2">
+                                            <Label className="text-gray-300">Email Corporativo</Label>
+                                            <Input
+                                                type="email"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                className="bg-white/5 border-white/10 text-white focus:border-[#00BBEE] h-12"
+                                                placeholder="nome@aec.com.br"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-gray-300">Senha</Label>
+                                            <Input
+                                                type="password"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                className="bg-white/5 border-white/10 text-white focus:border-[#00BBEE] h-12"
+                                                placeholder="••••••••"
+                                            />
+                                        </div>
+                                        <Button
+                                            type="submit"
+                                            className="w-full h-12 bg-[#004C99] hover:bg-[#004C99]/90 text-white font-semibold text-lg"
+                                            disabled={loading}
+                                        >
+                                            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Entrar"}
+                                        </Button>
+                                    </form>
+                                </DialogContent>
+                            </Dialog>
+
+                            <Button variant="outline" className="h-14 px-8 text-lg font-medium border-white/10 text-white hover:bg-white/5 rounded-xl">
+                                Saiba mais
+                            </Button>
+                        </div>
                     </div>
 
-                    {/* Features Grid */}
-                    <div className="grid grid-cols-2 gap-6 mt-12">
-                        {features.map((feature, index) => (
-                            <div
-                                key={index}
-                                className="p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-105"
-                            >
-                                <feature.icon className="h-8 w-8 text-[#00B8D4] mb-3" />
-                                <h3 className="font-semibold text-white mb-1">{feature.title}</h3>
-                                <p className="text-sm text-gray-400">{feature.description}</p>
+                    {/* Hero Illustration (Abstract/Tech) */}
+                    <div className="relative hidden lg:block">
+                        <div className="relative w-full aspect-square max-w-[600px] mx-auto">
+                            {/* Central Circle */}
+                            <div className="absolute inset-0 m-auto w-[400px] h-[400px] rounded-full border border-[#00BBEE]/20 animate-[spin_60s_linear_infinite]" />
+                            <div className="absolute inset-0 m-auto w-[300px] h-[300px] rounded-full border border-[#E6007E]/20 animate-[spin_40s_linear_infinite_reverse]" />
+
+                            {/* Floating Cards Mockup */}
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[400px] bg-gradient-to-b from-[#004C99]/20 to-[#0E0E11]/80 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl flex flex-col p-6 gap-4 transform -rotate-6 hover:rotate-0 transition-all duration-700">
+                                <div className="h-8 w-8 rounded-lg bg-[#00BBEE] mb-2" />
+                                <div className="h-4 w-3/4 bg-white/10 rounded" />
+                                <div className="h-4 w-1/2 bg-white/10 rounded" />
+                                <div className="mt-auto h-32 w-full bg-gradient-to-t from-[#00BBEE]/20 to-transparent rounded-xl" />
                             </div>
-                        ))}
-                    </div>
 
-                    {/* Stats */}
-                    <div className="flex gap-8 mt-12 pt-8 border-t border-white/10">
-                        <div>
-                            <p className="text-3xl font-bold text-[#00B8D4]">10k+</p>
-                            <p className="text-sm text-gray-400">Usuários Ativos</p>
-                        </div>
-                        <div>
-                            <p className="text-3xl font-bold text-[#E91E63]">500+</p>
-                            <p className="text-sm text-gray-400">Cursos Disponíveis</p>
-                        </div>
-                        <div>
-                            <p className="text-3xl font-bold text-[#FFD600]">98%</p>
-                            <p className="text-sm text-gray-400">Satisfação</p>
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[400px] bg-[#0E0E11] rounded-2xl border border-white/10 shadow-2xl flex flex-col p-6 gap-4 transform rotate-6 translate-x-12 translate-y-8 hover:rotate-0 hover:translate-x-0 hover:translate-y-0 transition-all duration-700 z-10">
+                                <div className="flex justify-between items-center mb-2">
+                                    <div className="h-8 w-8 rounded-lg bg-[#E6007E]" />
+                                    <div className="h-2 w-2 rounded-full bg-[#8CC63F]" />
+                                </div>
+                                <div className="space-y-3">
+                                    <div className="h-20 w-full bg-white/5 rounded-xl border border-white/5 p-3 flex items-center gap-3">
+                                        <div className="h-10 w-10 rounded-full bg-[#004C99]/20" />
+                                        <div className="flex-1">
+                                            <div className="h-2 w-20 bg-white/20 rounded mb-1" />
+                                            <div className="h-2 w-12 bg-white/10 rounded" />
+                                        </div>
+                                    </div>
+                                    <div className="h-20 w-full bg-white/5 rounded-xl border border-white/5 p-3 flex items-center gap-3">
+                                        <div className="h-10 w-10 rounded-full bg-[#FFCC00]/20" />
+                                        <div className="flex-1">
+                                            <div className="h-2 w-20 bg-white/20 rounded mb-1" />
+                                            <div className="h-2 w-12 bg-white/10 rounded" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            {/* Right Side - Login Form */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 relative z-10">
-                <Card className="w-full max-w-md bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
-                    <CardHeader className="text-center space-y-4">
-                        {/* Mobile Logo */}
-                        <div className="lg:hidden mx-auto h-16 w-16 rounded-2xl bg-gradient-to-br from-[#005EB8] via-[#00B8D4] to-[#E91E63] flex items-center justify-center shadow-xl">
-                            <Sparkles className="h-8 w-8 text-white" />
+            {/* --- CARDS SECTION --- */}
+            <section className="py-24 relative z-10">
+                <div className="container mx-auto px-6">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {cards.map((card, index) => (
+                            <div
+                                key={index}
+                                className="group p-6 rounded-2xl bg-[#0E0E11]/50 border border-white/5 hover:border-white/10 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1"
+                                style={{ boxShadow: `0 0 0 1px ${card.color}00` }}
+                            >
+                                <div
+                                    className="w-12 h-12 rounded-full flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110"
+                                    style={{
+                                        background: `linear-gradient(135deg, ${card.color}20, ${card.color}05)`,
+                                        border: `1px solid ${card.color}40`
+                                    }}
+                                >
+                                    <card.icon className="w-6 h-6" style={{ color: card.color }} />
+                                </div>
+                                <h3 className="text-xl font-semibold mb-2 text-white">{card.title}</h3>
+                                <p className="text-sm text-gray-400 leading-relaxed">{card.description}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* --- CLIENTS SECTION --- */}
+            <section className="py-24 bg-white/[0.02] border-y border-white/5">
+                <div className="container mx-auto px-6">
+                    <div className="text-center mb-12">
+                        <h2 className="text-2xl font-semibold text-white mb-2">Selecione o Cliente</h2>
+                        <p className="text-gray-400">Acesse o ambiente exclusivo de cada parceiro</p>
+                    </div>
+
+                    <div className="flex flex-wrap justify-center gap-8">
+                        {clients.map((client, index) => (
+                            <div
+                                key={index}
+                                className="group relative w-40 h-24 rounded-xl bg-[#0E0E11] border border-white/10 flex items-center justify-center cursor-pointer transition-all duration-300 hover:border-transparent"
+                            >
+                                <div
+                                    className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-md"
+                                    style={{ backgroundColor: `${client.color}40` }}
+                                />
+                                <div
+                                    className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 border"
+                                    style={{ borderColor: client.color }}
+                                />
+                                <span className="relative z-10 font-bold text-lg text-gray-300 group-hover:text-white transition-colors">
+                                    {client.name}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* --- FOOTER --- */}
+            <footer className="py-12 bg-white text-[#0E0E11]">
+                <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-[#004C99] flex items-center justify-center text-white">
+                            <Sparkles className="w-6 h-6" />
                         </div>
                         <div>
-                            <CardTitle className="text-3xl font-bold text-white">
-                                Bem-vindo de volta
-                            </CardTitle>
-                            <CardDescription className="text-gray-300 mt-2">
-                                Entre com suas credenciais para acessar a plataforma
-                            </CardDescription>
+                            <span className="block font-bold text-lg tracking-tight">AeC Portal</span>
+                            <span className="text-xs text-gray-500 uppercase tracking-wider">Formação & Treinamento</span>
                         </div>
-                    </CardHeader>
+                    </div>
 
-                    <CardContent>
-                        <form onSubmit={handleLogin} className="space-y-4">
-                            {error && (
-                                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center gap-2">
-                                    <AlertCircle className="h-4 w-4 text-red-400" />
-                                    <p className="text-sm text-red-400">{error}</p>
-                                </div>
-                            )}
+                    <p className="text-sm font-medium text-gray-600">
+                        Relacionamento com Responsabilidade.
+                    </p>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="email" className="flex items-center gap-2 text-white">
-                                    <Mail className="h-4 w-4 text-[#00B8D4]" />
-                                    Email
-                                </Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    placeholder="seu@email.com"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-[#00B8D4] focus:ring-[#00B8D4]"
-                                />
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="password" className="flex items-center gap-2 text-white">
-                                    <Lock className="h-4 w-4 text-[#00B8D4]" />
-                                    Senha
-                                </Label>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    placeholder="••••••••"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-[#00B8D4] focus:ring-[#00B8D4]"
-                                />
-                            </div>
-
-                            <Button
-                                type="submit"
-                                className="w-full bg-gradient-to-r from-[#005EB8] via-[#00B8D4] to-[#E91E63] hover:opacity-90 transition-opacity text-white font-semibold py-6 text-lg shadow-lg shadow-[#005EB8]/50"
-                                disabled={loading}
-                            >
-                                {loading ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                                        Entrando...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Sparkles className="mr-2 h-5 w-5" />
-                                        Entrar na Plataforma
-                                    </>
-                                )}
-                            </Button>
-
-                            <div className="text-center">
-                                <button
-                                    type="button"
-                                    className="text-sm text-[#00B8D4] hover:text-[#E91E63] transition-colors"
-                                >
-                                    Esqueceu sua senha?
-                                </button>
-                            </div>
-                        </form>
-
-                        <div className="mt-6 pt-6 border-t border-white/10">
-                            <p className="text-xs text-center text-gray-400">
-                                Desenvolvido por <span className="text-[#00B8D4] font-semibold">Mickael Bandeira</span> | Analista de Conteúdo
-                            </p>
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
+                    <div className="text-xs text-gray-400">
+                        © {new Date().getFullYear()} AeC. Todos os direitos reservados.
+                    </div>
+                </div>
+            </footer>
         </div>
     )
 }
